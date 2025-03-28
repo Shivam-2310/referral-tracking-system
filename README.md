@@ -76,9 +76,9 @@ cd referral-tracking-system
 Edit the `src/main/resources/application.properties` file with your PostgreSQL credentials:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/referral_db
-spring.datasource.username=postgres
-spring.datasource.password=root
+spring.datasource.url=jdbc:postgresql://localhost:5432/${DB_NAME}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
