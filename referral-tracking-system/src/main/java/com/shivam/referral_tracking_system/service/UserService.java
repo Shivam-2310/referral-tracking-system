@@ -8,9 +8,15 @@ import com.shivam.referral_tracking_system.entity.ReferralStatus;
 import com.shivam.referral_tracking_system.entity.User;
 import com.shivam.referral_tracking_system.repository.ReferralRepository;
 import com.shivam.referral_tracking_system.repository.UserRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,4 +91,30 @@ public class UserService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public ByteArrayInputStream generateReferralReport() throws IOException {
+        List<User> users = userRepository.findAll();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out),
+                CSVFormat.DEFAULT.withHeader("User ID", "Name", "Email", "Referral Code", "Referred Users", "Referred Users Count"))) {
+            for (User user : users) {
+                List<Referral> referrals = referralRepository.findByReferrer(user);
+                String referredUsers = referrals.stream()
+                        .map(ref -> ref.getReferred().getName())
+                        .collect(Collectors.joining(", "));
+                csvPrinter.printRecord(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getReferralCode(),
+                        referredUsers,
+                        referrals.size()
+                );
+            }
+            csvPrinter.flush();
+        }
+        return new ByteArrayInputStream(out.toByteArray());
+    }
 }
+
+

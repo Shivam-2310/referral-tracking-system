@@ -7,9 +7,14 @@ import com.shivam.referral_tracking_system.entity.Referral;
 import com.shivam.referral_tracking_system.entity.User;
 import com.shivam.referral_tracking_system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -49,6 +54,21 @@ public class UserController {
             return ResponseEntity.ok(referralResponses);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/referral-report")
+    public ResponseEntity<?> referralReport() {
+        try {
+            ByteArrayInputStream csvData = userService.generateReferralReport();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=referral_report.csv");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("text/csv"))
+                    .body(new InputStreamResource(csvData));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error generating report");
         }
     }
 }
