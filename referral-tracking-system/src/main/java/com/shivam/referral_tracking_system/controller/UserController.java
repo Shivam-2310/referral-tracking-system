@@ -1,6 +1,7 @@
 package com.shivam.referral_tracking_system.controller;
 
 import com.shivam.referral_tracking_system.dto.ProfileCompletionRequest;
+import com.shivam.referral_tracking_system.dto.ReferralResponse;
 import com.shivam.referral_tracking_system.dto.SignupRequest;
 import com.shivam.referral_tracking_system.entity.Referral;
 import com.shivam.referral_tracking_system.entity.User;
@@ -44,8 +45,8 @@ public class UserController {
     @GetMapping("/referrals/{userId}")
     public ResponseEntity<?> getReferrals(@PathVariable Long userId) {
         try {
-            List<Referral> referrals = userService.getReferrals(userId);
-            return ResponseEntity.ok(referrals);
+            List<ReferralResponse> referralResponses = userService.getReferralsDto(userId);
+            return ResponseEntity.ok(referralResponses);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

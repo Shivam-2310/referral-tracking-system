@@ -1,6 +1,7 @@
 package com.shivam.referral_tracking_system.service;
 
 import com.shivam.referral_tracking_system.dto.ProfileCompletionRequest;
+import com.shivam.referral_tracking_system.dto.ReferralResponse;
 import com.shivam.referral_tracking_system.dto.SignupRequest;
 import com.shivam.referral_tracking_system.entity.Referral;
 import com.shivam.referral_tracking_system.entity.ReferralStatus;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -66,9 +68,21 @@ public class UserService {
         return user;
     }
 
-    public List<Referral> getReferrals(Long userId) {
+    public List<ReferralResponse> getReferralsDto(Long userId) {
         User referrer = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return referralRepository.findByReferrer(referrer);
+
+        List<Referral> referrals = referralRepository.findByReferrer(referrer);
+
+        return referrals.stream()
+                .map(r -> new ReferralResponse(
+                        r.getId(),
+                        r.getReferrer().getId(),
+                        r.getReferrer().getName(),
+                        r.getReferred().getId(),
+                        r.getReferred().getName(),
+                        r.getStatus()
+                ))
+                .collect(Collectors.toList());
     }
 }
