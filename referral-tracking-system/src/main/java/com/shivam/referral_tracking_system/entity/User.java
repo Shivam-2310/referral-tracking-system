@@ -17,17 +17,20 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private String password;
+
     @Column(unique = true)
     private String mobileNumber;
 
+    private String gender;
 
-    private String password;
+    private String address;
 
-    // UNIQUE REFERRAL CODE FOR EACH USER
+    // UNIQUE REFERRAL CODE generated FOR EACH USER
     @Column(unique = true)
     private String referralCode;
 
-    // SELF REFERENCING
+    // REFERRER
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "referrer_id")
     private User referrer;
@@ -37,23 +40,37 @@ public class User {
 
     public User() {}
 
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getMobileNumber() {
@@ -64,27 +81,42 @@ public class User {
         this.mobileNumber = mobileNumber;
     }
 
-    public String getPassword() {
-        return password;
+    public String getGender() {
+        return gender;
     }
-    public void setPassword(String password) {
-        this.password = password;
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getReferralCode() {
         return referralCode;
     }
+
     public void setReferralCode(String referralCode) {
         this.referralCode = referralCode;
     }
+
     public User getReferrer() {
         return referrer;
     }
+
     public void setReferrer(User referrer) {
         this.referrer = referrer;
     }
+
     public boolean isProfileCompleted() {
         return profileCompleted;
     }
+
     public void setProfileCompleted(boolean profileCompleted) {
         this.profileCompleted = profileCompleted;
     }
@@ -94,4 +126,3 @@ public class User {
         return UUID.randomUUID().toString().substring(0, 8);
     }
 }
-
