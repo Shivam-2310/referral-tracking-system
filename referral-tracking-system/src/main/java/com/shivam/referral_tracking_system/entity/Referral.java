@@ -1,9 +1,11 @@
 package com.shivam.referral_tracking_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "referrals")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Referral {
 
     @Id
